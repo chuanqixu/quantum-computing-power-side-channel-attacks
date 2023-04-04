@@ -8,7 +8,7 @@ import pickle, multiprocessing, itertools, functools, os
 
 
 if __name__ == "__main__":
-    num_layout_list = [2**i for i in range(10)]
+    num_layout_list = [2**i for i in range(8)]
     seed_layout = 0
 
     bm = QASMBenchmark(r"E:\Research\QASMBench", "small", num_qubits_list=list(range(7)), remove_final_measurements=True)
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     provider = load_provider()
     backend = provider.get_backend("ibm_lagos")
     bp = BasisPulse(backend)
-    bp.save_basis_amp_time_series_list(os.path.join(os.path.dirname(__file__), "benchmark_amp_timeseries", "basis_pulse_data.pickle"))
+    bp.save_basis_amp_time_series_list(os.path.join(os.path.dirname(__file__), "data", f"basis_pulse_{backend.configuration().backend_name}.pickle"))
 
     num_process = 12
 
@@ -45,10 +45,7 @@ if __name__ == "__main__":
 
         print(f"Total number of circuits: {len(schedule_list)}")
 
-        scale = 10
-        power_list = []
-        for sched in schedule_list:
-            power_list = CircAmpTimeSeries.from_sched(sched, backend).total()
+        power_list = [CircAmpTimeSeries.from_sched(sched, backend).total() for sched in schedule_list]
         
-        with open(os.path.join(os.path.dirname(__file__), "benchmark_amp_timeseries", f"benchmark_amp_timeseries_layout_{str(num_layout)}.pickle"), "wb") as f:
+        with open(os.path.join(os.path.dirname(__file__), "data", f"layout_{str(num_layout)}.pickle"), "wb") as f:
             pickle.dump(power_list, f)
