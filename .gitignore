@@ -1,1 +1,5 @@
-experiments/user_circuit_identification/data/layout**
+experiments/1-user_circuit_identification/data/layout**
+__pycache__/
+provider_credential.json
+**egg-info
+src/build
