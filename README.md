@@ -1,7 +1,31 @@
 # quantum-computing-power-side-channel-attacks
 
-This is the repository for CCS 23 Artifact Appendix: Exploration of Power Side-Channel
+This is the repository for ACM CCS 23 Artifact Appendix: Exploration of Power Side-Channel
 Vulnerabilities in Quantum Computer Controllers.
+
+Please find full-length paper paper: [Exploration of Power Side-Channel
+Vulnerabilities in Quantum Computer Controllers](https://dl.acm.org/doi/10.1145/3576915.3623118), or arXiv version [Exploration of Quantum Computer Power Side-Channels](https://arxiv.org/abs/2304.03315).
+
+Bibtex:
+```bibtex
+@inproceedings{10.1145/3576915.3623118,
+author = {Xu, Chuanqi and Erata, Ferhat and Szefer, Jakub},
+title = {Exploration of Power Side-Channel Vulnerabilities in Quantum Computer Controllers},
+year = {2023},
+isbn = {9798400700507},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3576915.3623118},
+doi = {10.1145/3576915.3623118},
+abstract = {The rapidly growing interest in quantum computing also increases the importance of securing these computers from various physical attacks. Constantly increasing qubit counts and improvements to the fidelity of the quantum computers hold great promise for the ability of these computers to run novel algorithms with highly sensitive intellectual property. However, in today's cloud-based quantum computer setting, users lack physical control over the computers. Physical attacks, such as those perpetrated by malicious insiders in data centers, could be used to extract sensitive information about the circuits being executed on these computers. This work shows the first exploration and study of power-based side-channel attacks in quantum computers. The explored attacks could be used to recover information about the control pulses sent to these computers. By analyzing these control pulses, attackers can reverse-engineer the equivalent gate-level description of the circuits, and the algorithms being run, or data hard-coded into the circuits. This work introduces five new types of attacks, and evaluates them using control pulse information available from cloud-based quantum computers. This work demonstrates how and what circuits could be recovered, and then in turn how to defend from the newly demonstrated side-channel attacks on quantum computing systems.},
+booktitle = {Proceedings of the 2023 ACM SIGSAC Conference on Computer and Communications Security},
+pages = {579–593},
+numpages = {15},
+keywords = {quantum computer controllers, power side-channel vulnerabilities, quantum computers},
+location = {<conf-loc>, <city>Copenhagen</city>, <country>Denmark</country>, </conf-loc>},
+series = {CCS '23}
+}
+```
 
 ## Abstract
 
@@ -61,6 +85,13 @@ This study utilizes [QASMBench](https://github.com/pnnl/QASMBench) as its benchm
 
 The access to IBM Quantum is required. One can register at [IBM Quantum Platform](https://quantum-computing.ibm.com/).
 
+To set up the Qiskit account, visit the IBM Quantum Account web page and copy the account API token at: [IBM Quantum Account](https://quantum-computing.ibm.com/account). Replace `MY_API_TOKEN` below with it and execute the following code snippet:
+```python
+   from qiskit import IBMQ
+   IBMQ.save_account('MY_API_TOKEN')
+```
+
+
 We provide a quick load function to access the provider. To set up, create a JSON file `provider_credential.json` containing the credential information under the path `src/qcutils/credential`. For example, in the Linux system, this can be done with the command (starting from the root):
 ```bash
 touch src/qcutils/credential/provider_credential.json
@@ -70,7 +101,7 @@ Inside the file, include the access information. One example:
 ```json
 {
     "ibm_quantum": {
-        "hub": "ibm-q-open", 
+        "hub": "ibm-q", 
         "group": "open", 
         "project": "main"
     }
@@ -118,22 +149,22 @@ The experiments used classes and functions in the directory `src/qcutils`, which
 
 Other codes needed to reproduce the experiments are in each Jupyter Notebook to perform the experiments. The estimated human-time is the time of running the Jupyter notebooks and thus is negligible. The estimated compute-time is provided in the following for each experiment:
 
-0. `0-benchmark` [4 compute-minutes]: This directory contains the schematics to show the general features of the benchmark [2 compute-minute].
+1. `0-benchmark` [4 compute-minutes]: This directory contains the schematics to show the general features of the benchmark.
    1. `benchmark_info.ipynb`: Figure 9 of the undefended version, and Fig. 9 in the long version of the paper.
    2. `benchmark_reconstruct_info.ipynb`: Table 3, Parameters data of the benchmark quantum circuits.
    3. `mean_power.ipynb`: Additional figures to show the mean power plot of different quantum circuit, and different layouts of `toffoli_n3`. These figures are not shown in the paper due to the page limit.
    4. `plot_backend_info.ipynb`: Figure 6 (d-f), which shows the amplitude of the native gates, X, SX, and CNOT on different quantum machines. Note that by the time of the submission of this artifact, only `ibm_nairobi`, `ibm_lagos`, and `ibm_perth` are working, while other backends have retired. Correspondingly, the list of backends needs to be changed. This can be done by changing the first parameters in the 4th block. For example, change it to `backend_name_list = ["ibm_nairobi", "ibm_lagos", "ibm_perth"]` so that only these three backends will be considered.
 
-1. `1-user_circuit_identification` [20 compute-hours]: This directory contains the code for Section 5.1 User Circuit Identification (UC).
+2. `1-user_circuit_identification` [20 compute-hours]: This directory contains the code for Section 5.1 User Circuit Identification (UC).
    1. `benchmark_gen.py`: Generate the amplitude time series for quantum circuits in the benchmark, with data boosting by transpiling circuits into different layouts.
    2. `compute_accuracy.ipynb`: Generate the data for Figure 7, which shows the results of user circuit identification (UC).
    3. `plot_accuracy.ipynb`: Plot Figure 7.
 
-2. `2-circuit_oracle_identification` [3 compute-hours]: This directory contains the code for Section 5.2 Circuit Oracle Identification (CO).
+3. `2-circuit_oracle_identification` [3 compute-hours]: This directory contains the code for Section 5.2 Circuit Oracle Identification (CO).
    1. `circuit_oracle_identification.ipynb`: Table 2, which shows the minimum circuit distance with the different number of qubits of the oracles.
    2. `circuit_oracle_plot.ipynb`: Fig. 8 (a) and (b) in the long version, which shows the idea that angles in RZ will be changed for Deutsch-Jozsa and Grover's search.
 
-3. `3-circuit_ansatz_identification` [1 compute-minute]: This directory contains the code for Section 5.3 Circuit Ansatz Identification (CA).
+4. `3-circuit_ansatz_identification` [1 compute-minute]: This directory contains the code for Section 5.3 Circuit Ansatz Identification (CA).
    1. `circuit_ansatz_identification.ipynb`: The minimum circuit distance mentioned in Section 5.3.
    2. `circuit_ansatz_plot.ipynb`: Fig. 8 (c) in the long version, which shows the idea that angles in RZ will be changed for QAOA.
 
@@ -149,9 +180,11 @@ Other codes needed to reproduce the experiments are in each Jupyter Notebook to 
 7. `7-defense` [1 compute-hour]: This directory contains the code for Section 6.1 Preventing Timing, Total Energy, and Mean Power Attacks.
    1. `ui_defense.ipynb`: Figure 9 in Section 6.1 Preventing Timing, Total Energy, and Mean
 Power Attacks, which shows the results with defense for energy, mean power, and duration.
-   2. `rz_defense.ipynb`: Discussion in Section 6.3 Preventing Per-Channel Trace Attacks, which defense by transforming the gates.
+   1. `rz_defense.ipynb`: Discussion in Section 6.3 Preventing Per-Channel Trace Attacks, which defense by transforming the gates.
 
 
 ## Version
 
-Based on the LaTeX template for Artifact Evaluation V20231005. Submission, reviewing and badging methodology followed for the evaluation of this artifact can be found at https://secartifacts.github.io/usenixsec2024/.
+Based on the LaTeX template for Artifact Evaluation V20231005. Submission,
+reviewing and badging methodology followed for the evaluation of this artifact
+can be found at https://secartifacts.github.io/acmccs2023/.
